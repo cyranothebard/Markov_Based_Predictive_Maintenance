@@ -71,9 +71,11 @@ logs/
 # models/*.joblib
 # models/*.h5
 
-# Data (optional - uncomment if you don't want to track large data files)
-# data/processed/
-# data/interim/
+# Data files (exclude large dataset files)
+data/raw/*.txt
+data/raw/*.pdf
+data/processed/
+data/interim/
 
 # Results (optional - uncomment if you don't want to track results)
 # results/plots/
