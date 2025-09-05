@@ -1,0 +1,12 @@
+{
+  "annual_savings": 52565125.0,
+  "payback_period_months": 0.14859937940707896,
+  "three_year_roi_percent": 24126.21153846154,
+  "net_three_year_benefit": 156820375.0,
+  "implementation_cost": 650000,
+  "annual_operating_cost": 75000,
+  "fleet_size": 200,
+  "annual_incidents": 5.0,
+  "preventable_incidents": 3.5,
+  "model_accuracy": 73.46315387552501
+}

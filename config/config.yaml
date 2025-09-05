@@ -1,0 +1,23 @@
+data:
+  raw_path: "data/raw/"
+  processed_path: "data/processed/"
+  features_path: "data/features/"
+  
+model:
+  markov_states: 4  # Healthy, Warning, Critical, Failure
+  health_threshold: 0.8
+  warning_threshold: 0.6
+  critical_threshold: 0.3
+  
+sensors:
+  primary_indicators: [2, 3, 4, 7, 8, 9, 11, 12, 13, 14, 15, 17, 20, 21]  # Most informative sensors
+  temperature_sensors: [2, 3, 4, 7, 12, 13, 14, 15]
+  pressure_sensors: [8, 9]
+  flow_sensors: [11, 17]
+  
+evaluation:
+  test_split: 0.2
+  cv_folds: 5
+  target_mape: 15.0  # Target MAPE threshold
+
+

@@ -1,0 +1,5 @@
+Scenario,Prevention Rate,False Positive Rate,Payback Period (months),3-Year ROI,Annual Net Benefit
+Base Case,70%,15%,0.1,24126%,"$52,490,125"
+Optimistic,85%,10%,0.1,32499%,"$56,505,625"
+Pessimistic,55%,20%,0.2,14815%,"$48,474,625"
+Conservative,60%,25%,0.2,18544%,"$48,474,625"
