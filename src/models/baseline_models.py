@@ -128,11 +128,30 @@ class BaselineModels:
         
         # Reshape data for LSTM input (samples, timesteps, features)
         X_train_reshaped = self._create_sequences(X_train, sequence_length)
-        y_train_reshaped = y_train[sequence_length-1:]  # Adjust target length
+        y_train_reshaped = y_train[sequence_length:]  # Adjust target length to match sequences
+        
+        # Ensure we have the right data types and no NaN values
+        X_train_reshaped = np.array(X_train_reshaped, dtype=np.float32)
+        y_train_reshaped = np.array(y_train_reshaped, dtype=np.float32)
         
         # Convert to PyTorch tensors
         X_train_tensor = torch.FloatTensor(X_train_reshaped)
         y_train_tensor = torch.FloatTensor(y_train_reshaped).unsqueeze(1)
+        
+        # Safety check: ensure tensors have matching first dimension
+        print(f"Final tensor shapes - X: {X_train_tensor.shape}, y: {y_train_tensor.shape}")
+        if X_train_tensor.size(0) != y_train_tensor.size(0):
+            print(f"❌ Size mismatch detected!")
+            print(f"X_train_tensor.size(0): {X_train_tensor.size(0)}")
+            print(f"y_train_tensor.size(0): {y_train_tensor.size(0)}")
+            raise ValueError(f"Tensor size mismatch: X has {X_train_tensor.size(0)} samples, y has {y_train_tensor.size(0)} samples")
+        
+        # Create data loader
+        print("Creating TensorDataset...")
+        dataset = TensorDataset(X_train_tensor, y_train_tensor)
+        print("Creating DataLoader...")
+        dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+        print(f"✓ TensorDataset and DataLoader created successfully")
         
         # Create PyTorch LSTM model
         lstm_model = LSTMModel(
@@ -145,10 +164,6 @@ class BaselineModels:
         # Set up training
         criterion = nn.MSELoss()
         optimizer = optim.Adam(lstm_model.parameters(), lr=0.001)
-        
-        # Create data loader
-        dataset = TensorDataset(X_train_tensor, y_train_tensor)
-        dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
         
         # Training loop
         lstm_model.train()
@@ -177,7 +192,7 @@ class BaselineModels:
         # Evaluate if test data provided
         if X_test is not None and y_test is not None:
             X_test_reshaped = self._create_sequences(X_test, sequence_length)
-            y_test_reshaped = y_test[sequence_length-1:]
+            y_test_reshaped = y_test[sequence_length:]
             
             X_test_tensor = torch.FloatTensor(X_test_reshaped)
             lstm_model.eval()
@@ -299,7 +314,7 @@ class BaselineModels:
         # Evaluate LSTM
         if 'lstm' in self.models:
             X_test_reshaped = self._create_sequences(X_test, sequence_length)
-            y_test_reshaped = y_test[sequence_length-1:]
+            y_test_reshaped = y_test[sequence_length:]
             
             if len(X_test_reshaped) > 0:
                 y_pred_lstm = self.models['lstm'].predict(X_test_reshaped, verbose=0).flatten()

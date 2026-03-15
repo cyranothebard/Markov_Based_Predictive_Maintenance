@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 from typing import List, Tuple, Optional
 import os
+from pathlib import Path
 
 
 class CMAPSSLoader:
@@ -18,17 +19,58 @@ class CMAPSSLoader:
     
     Handles loading of training data, test data, and RUL labels
     with proper column naming and data validation.
+    Automatically finds the data directory regardless of execution location.
     """
     
-    def __init__(self, data_path: str):
+    def __init__(self, data_path: Optional[str] = None):
         """
         Initialize the CMAPSS data loader.
         
         Args:
-            data_path (str): Path to the directory containing CMAPSS data files
+            data_path (Optional[str]): Path to the directory containing CMAPSS data files.
+                                     If None, will automatically find the data/raw directory.
         """
-        self.data_path = data_path
+        if data_path is None:
+            self.data_path = self._find_data_directory()
+        else:
+            self.data_path = data_path
+            
         self.column_names = self._define_column_names()
+    
+    def _find_data_directory(self) -> str:
+        """
+        Automatically find the data/raw directory from any execution location.
+        
+        Returns:
+            str: Path to the data/raw directory
+            
+        Raises:
+            FileNotFoundError: If data directory cannot be found
+        """
+        # Start from current working directory and search upwards
+        current_path = Path.cwd()
+        
+        # Also try starting from the script location
+        script_path = Path(__file__).parent
+        
+        search_paths = [current_path, script_path]
+        
+        for start_path in search_paths:
+            # Search upwards from start_path
+            for path in [start_path] + list(start_path.parents):
+                data_raw_path = path / 'data' / 'raw'
+                if data_raw_path.exists() and data_raw_path.is_dir():
+                    # Verify it contains CMAPSS files
+                    sample_files = ['train_FD001.txt', 'test_FD001.txt', 'RUL_FD001.txt']
+                    if any((data_raw_path / f).exists() for f in sample_files):
+                        return str(data_raw_path)
+        
+        # If not found, provide helpful error message
+        raise FileNotFoundError(
+            "Could not automatically find data/raw directory. "
+            "Please ensure the project structure includes data/raw/ with CMAPSS files, "
+            "or provide an explicit data_path parameter."
+        )
     
     def _define_column_names(self) -> List[str]:
         """

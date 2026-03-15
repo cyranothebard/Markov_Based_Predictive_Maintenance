@@ -106,3 +106,4 @@ Saxena, A., Goebel, K., Simon, D., & Eklund, N. (2008). Damage propagation model
 
 if __name__ == "__main__":
     download_cmapss_data()
+

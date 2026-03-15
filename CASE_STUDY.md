@@ -52,6 +52,49 @@ CMAPSS Loader → Rolling Features → Markov Chain → Linear Reg → API/MLOps
 - **Business alignment**: Maps to maintenance decision-making process
 - **Performance**: Competitive accuracy with explainable results
 
+### Business Decision Framework
+
+This project demonstrates a critical principle in production ML: **the best model isn't always the most accurate one**. While Random Forest achieved superior performance metrics (RMSE: 45.95, R²: 0.393), the Markov Chain model (RMSE: 49.11, R²: 0.307) was selected for production deployment.
+
+#### Model Selection Criteria
+
+| Factor | Random Forest | Markov Chain | Winner |
+|--------|---------------|--------------|---------|
+| **Performance** | 45.95 RMSE | 49.11 RMSE | Random Forest |
+| **Interpretability** | Medium | High | Markov Chain |
+| **Business Alignment** | Medium | High | Markov Chain |
+| **Regulatory Compliance** | Medium | High | Markov Chain |
+| **Stakeholder Communication** | Medium | High | Markov Chain |
+| **Production Readiness** | Medium | High | Markov Chain |
+
+**Overall Winner**: Markov Chain (5/6 factors)
+
+#### Why Interpretability Won
+
+1. **Physical Process Modeling**: Markov Chains directly model engine degradation states (Healthy → Degrading → Critical → Failure), while Random Forest uses statistical pattern recognition across 14 sensor features.
+
+2. **Regulatory Compliance**: Aviation regulators require explainable predictions for safety-critical systems. Markov Chains provide clear state transitions and probabilistic reasoning, while Random Forest ensemble decisions are harder to justify.
+
+3. **Stakeholder Communication**: 
+   - **Markov Chain**: "Engine is in 'Critical' state with 85% confidence, expected failure in 45 cycles"
+   - **Random Forest**: "Based on 100 decision trees analyzing 14 sensors, predict 45 cycles"
+
+4. **Maintenance Decision Support**: Markov Chains provide actionable insights about engine health states, while Random Forest requires interpretation of feature importance and tree structures.
+
+*For a detailed analysis of this decision-making process, see the [Model Selection Blog Post](BLOG_POST_MODEL_SELECTION.md).*
+
+---
+
+## 📚 Related Documentation
+
+This case study is part of a comprehensive project documentation suite:
+
+- **[README.md](README.md)**: Project overview, setup, and quick start guide
+- **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)**: Comprehensive technical and business summary
+- **[TECHNICAL_DOCS.md](TECHNICAL_DOCS.md)**: Technical documentation for deployment
+- **[BLOG_POST_MODEL_SELECTION.md](BLOG_POST_MODEL_SELECTION.md)**: Deep dive into model selection philosophy
+- **[notebooks/](notebooks/)**: Complete analysis notebooks with code and results
+
 ---
 
 ## 3. Technical Implementation

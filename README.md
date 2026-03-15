@@ -205,6 +205,83 @@ class FeatureEngineer:
 3. **Feature engineering** is critical for model success
 4. **Business case is compelling** with strong ROI across scenarios
 
+## 🎯 Model Selection Philosophy
+
+### The Interpretability vs Performance Trade-off
+
+While Random Forest achieved the best performance metrics (RMSE: 45.95, R²: 0.393), I chose the Markov Chain model (RMSE: 49.11, R²: 0.307) for production deployment. This decision demonstrates a key principle in production ML: **the best model isn't always the most accurate one**.
+
+### Why Markov Chains Won Despite Lower Performance
+
+#### 1. **Physical Process Modeling**
+- **Markov Chain**: Directly models engine degradation states (Healthy → Degrading → Critical → Failure)
+- **Random Forest**: Statistical pattern recognition across 14 sensor features
+- **Business Value**: Engineers can understand and trust state-based predictions
+
+#### 2. **Regulatory Compliance**
+- **Aviation Context**: Regulators require explainable predictions for safety-critical systems
+- **Markov Chain**: Clear state transitions and probabilistic reasoning
+- **Random Forest**: Complex ensemble decisions harder to justify
+
+#### 3. **Stakeholder Communication**
+- **Markov Chain**: "Engine is in 'Critical' state with 85% confidence, expected failure in 45 cycles"
+- **Random Forest**: "Based on 100 decision trees analyzing 14 sensors, predict 45 cycles"
+- **Impact**: Non-technical stakeholders can understand and act on Markov predictions
+
+#### 4. **Maintenance Decision Support**
+- **Markov Chain**: Provides actionable insights about engine health states
+- **Random Forest**: Requires interpretation of feature importance and tree structures
+- **Result**: Maintenance teams can make informed decisions with confidence
+
+### The Decision Framework
+
+I developed a comprehensive framework for model selection in production systems:
+
+| Factor | Random Forest | Markov Chain | Winner |
+|--------|---------------|--------------|---------|
+| **Performance** | 45.95 RMSE | 49.11 RMSE | Random Forest |
+| **Interpretability** | Medium | High | Markov Chain |
+| **Business Alignment** | Medium | High | Markov Chain |
+| **Regulatory Compliance** | Medium | High | Markov Chain |
+| **Stakeholder Communication** | Medium | High | Markov Chain |
+| **Production Readiness** | Medium | High | Markov Chain |
+
+**Overall Winner**: Markov Chain (5/6 factors)
+
+### Key Takeaway
+
+This project demonstrates that **model selection in production ML requires balancing technical performance with business requirements**. The ability to explain and justify predictions is often more valuable than marginal improvements in accuracy, especially in safety-critical applications.
+
+*For a detailed analysis of this decision-making process, see the [Model Selection Blog Post](BLOG_POST_MODEL_SELECTION.md).*
+
+## 📚 Documentation Overview
+
+This project includes comprehensive documentation to support different audiences and use cases:
+
+### **📖 For Technical Audiences**
+- **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)**: Comprehensive technical and business overview
+- **[TECHNICAL_DOCS.md](TECHNICAL_DOCS.md)**: API reference and deployment guide
+- **[BLOG_POST_MODEL_SELECTION.md](BLOG_POST_MODEL_SELECTION.md)**: Deep dive into model selection philosophy
+
+### **💼 For Business Audiences**
+- **[CASE_STUDY.md](CASE_STUDY.md)**: Business case study with ROI analysis
+- **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)**: Executive summary and key insights
+- **[BLOG_POST_MODEL_SELECTION.md](BLOG_POST_MODEL_SELECTION.md)**: Model selection rationale for stakeholders
+
+### **🔬 For Research/Portfolio Audiences**
+- **[notebooks/](notebooks/)**: Complete analysis notebooks with code and results
+- **[BLOG_POST_MODEL_SELECTION.md](BLOG_POST_MODEL_SELECTION.md)**: Technical blog post on model selection
+- **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)**: Comprehensive project documentation
+
+### **📊 Quick Navigation**
+| Document | Purpose | Audience | Key Content |
+|----------|---------|----------|-------------|
+| [README.md](README.md) | Project overview & setup | All | Quick start, structure, results |
+| [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) | Comprehensive summary | Technical/Business | Full project analysis |
+| [CASE_STUDY.md](CASE_STUDY.md) | Business case study | Business/Management | ROI, implementation, lessons |
+| [TECHNICAL_DOCS.md](TECHNICAL_DOCS.md) | Technical reference | Developers/Engineers | API, deployment, architecture |
+| [BLOG_POST_MODEL_SELECTION.md](BLOG_POST_MODEL_SELECTION.md) | Model selection analysis | Data Scientists/Technical | Philosophy, decision framework |
+
 ## 🛠️ Development Notes
 
 ### Challenges Addressed

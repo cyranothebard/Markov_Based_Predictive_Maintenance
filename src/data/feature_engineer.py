@@ -28,9 +28,29 @@ class FeatureEngineer:
         Args:
             config (dict): Configuration dictionary containing thresholds and parameters
         """
-        self.config = config
+        self.config = self._validate_config(config)
         self.scaler = StandardScaler()
         self.fitted_scaler = False
+    
+    def _validate_config(self, config: dict) -> dict:
+        """Validate and set defaults for configuration"""
+        # Ensure required model parameters exist
+        if 'model' not in config:
+            config['model'] = {
+                'health_threshold': 0.8,
+                'warning_threshold': 0.6,
+                'critical_threshold': 0.4
+            }
+        
+        # Ensure required sensor groupings exist  
+        if 'sensors' not in config:
+            config['sensors'] = {
+                'temperature_sensors': [1, 2, 3, 4, 5],
+                'pressure_sensors': [1, 2, 3],
+                'flow_sensors': [1, 2]
+            }
+            
+        return config
     
     def calculate_rul_labels(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -115,8 +135,8 @@ class FeatureEngineer:
         # Handle NaN values in rolling features
         rolling_columns = [col for col in df.columns if 'rolling' in col]
         for col in rolling_columns:
-            # Fill NaN values with forward fill, then backward fill
-            df[col] = df[col].fillna(method='ffill').fillna(method='bfill')
+            # Fill NaN values with forward fill, then backward fill (using pandas 2.0+ syntax)
+            df[col] = df[col].ffill().bfill()
             
             # If still NaN (shouldn't happen), fill with 0
             df[col] = df[col].fillna(0)
@@ -135,10 +155,10 @@ class FeatureEngineer:
         """
         df = df.copy()
         
-        # Get sensor groups from config
-        temp_sensors = [f'sensor_{i:02d}' for i in self.config['sensors']['temperature_sensors']]
-        pressure_sensors = [f'sensor_{i:02d}' for i in self.config['sensors']['pressure_sensors']]
-        flow_sensors = [f'sensor_{i:02d}' for i in self.config['sensors']['flow_sensors']]
+        # Get sensor groups from config (with safe access)
+        temp_sensors = [f'sensor_{i:02d}' for i in self.config.get('sensors', {}).get('temperature_sensors', [])]
+        pressure_sensors = [f'sensor_{i:02d}' for i in self.config.get('sensors', {}).get('pressure_sensors', [])]
+        flow_sensors = [f'sensor_{i:02d}' for i in self.config.get('sensors', {}).get('flow_sensors', [])]
         
         # Temperature health index (normalized average)
         if temp_sensors:
@@ -259,7 +279,7 @@ class FeatureEngineer:
         
         # Fill NaNs in sensor columns prior to scaling (per series, preserving order)
         for col in sensor_columns:
-            df[col] = df[col].fillna(method='ffill').fillna(method='bfill').fillna(0)
+            df[col] = df[col].ffill().bfill().fillna(0)
         
         # Fit scaler on training data
         if fit_scaler:
@@ -302,8 +322,8 @@ class FeatureEngineer:
         initial_nan_count = df.isnull().sum().sum()
         if initial_nan_count > 0:
             print(f"Found {initial_nan_count} NaN values in raw data, handling...")
-            # Fill NaN values with forward fill, then backward fill
-            df = df.fillna(method='ffill').fillna(method='bfill')
+            # Fill NaN values with forward fill, then backward fill (pandas 2.0+ syntax)
+            df = df.ffill().bfill()
             # If still NaN, fill with 0
             df = df.fillna(0)
             print("✓ Initial NaN values handled")

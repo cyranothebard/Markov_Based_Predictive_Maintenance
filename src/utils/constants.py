@@ -24,11 +24,11 @@ TARGET_RMSE = 20.0
 TARGET_MAPE = 15.0
 TARGET_DIRECTIONAL_ACCURACY = 80.0
 
-# File paths
-DATA_DIR = 'data'
-RAW_DATA_DIR = 'data/raw'
-PROCESSED_DATA_DIR = 'data/processed'
-FEATURES_DATA_DIR = 'data/features'
+# File paths - Use auto-detection for robustness
+# Note: For data paths, use CMAPSSLoader() without parameters for auto-detection
+DATA_DIR = 'data'  # Relative to project root
+PROCESSED_DATA_DIR = 'data/processed'  # Relative to project root  
+FEATURES_DATA_DIR = 'data/features'  # Relative to project root
 RESULTS_DIR = 'results'
 FIGURES_DIR = 'results/figures'
 
